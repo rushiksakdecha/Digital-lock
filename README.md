@@ -1,2 +1,3 @@
 # Digital-lock
-Designed and implemented a 8-bit password-based Digital Lock System using Verilog HDL and deployed it on FPGA, along with discrete IC-level implementation for hardware validation.
+Designed and implemented a 8-bit Digital Lock System using Verilog HDL with configurable password, wrong-attempt lockout, and password update functionality.
+Implemented on FPGA and validated through hardware-level IC realization.
