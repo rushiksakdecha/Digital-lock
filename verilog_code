@@ -1,0 +1,218 @@
+module digital_lock(y,mode,switch,reset,seg1,seg2,ok,z);
+input [7:0]switch;
+input mode,reset,ok;
+reg [7:0]b,a;
+output reg y;
+output reg [6:0]seg1,seg2;
+
+
+initial
+begin
+b=8'b00010011;
+end
+
+
+always@(posedge ok)
+begin
+if(mode==1)
+	if(y==1)
+		b=switch;
+	else
+		b=b;
+else
+		a=switch;
+end
+///////////
+output reg z;
+reg [3:0]check;
+
+reg [3:0]Q;
+
+
+
+always@(posedge ok,posedge reset)
+begin
+if(reset)
+	begin
+	z<=1;
+	Q=4'b0000;
+	end
+else
+	begin
+	if(Q<4'b0011)
+	begin
+	Q<=Q+1;
+	z<=1;
+	end
+	else
+			if(y==1)
+			z<=1;
+			else
+			z<=0;
+	end
+end
+
+
+
+
+///////////////
+always @({switch[3],switch[2],switch[1],switch[0]})
+begin
+ case ({switch[3],switch[2],switch[1],switch[0]})
+ 4'b0000:
+ begin//0
+ seg1 = 7'b1000000;
+ end
+ 4'b0001:
+ begin//1
+ seg1 = 7'b1111001;
+ end
+ 4'b0010:
+ begin//2
+ seg1 = 7'b0100100;
+ end
+4'b0011:
+ begin//3
+ seg1 = 7'b0110000;
+
+ end
+ 4'b0100:
+ begin//4
+ seg1 = 7'b0011001;
+ end
+ 4'b0101:
+ begin//5
+ seg1 = 7'b0010010;
+ end
+ 4'b0110:
+ begin//6
+ seg1 = 7'b0000010;
+ end
+ 4'b0111:
+ begin//7
+ seg1 = 7'b1111000;
+ end
+	
+ 4'b1000:
+ begin//8
+ seg1 = 7'b0000000;
+ end
+ 
+ 4'b1001:
+ begin//9
+ seg1 = 7'b0010000;
+ end
+ 
+ default:
+ seg1 = 7'b0000110;
+endcase
+end
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+always @({switch[7],switch[6],switch[5],switch[4]})
+begin 
+case ({switch[7],switch[6],switch[5],switch[4]})
+4'b0000:
+ begin//0
+ seg2 = 7'b1000000;
+
+ end
+ 4'b0001:
+ begin//1
+ seg2 = 7'b1111001;
+
+ end
+ 4'b0010:
+ begin//2
+ seg2 = 7'b0100100;
+ 
+ end
+ 4'b0011:
+ begin//3
+ seg2 = 7'b0110000;
+
+ end
+ 4'b0100:
+ begin//4
+ seg2 = 7'b0011001;
+
+ end
+ 4'b0101:
+ begin//5
+ seg2 = 7'b0010010;
+
+ end
+ 4'b0110:
+ begin//6
+ seg2 = 7'b0000010;
+ 
+ end
+ 4'b0111:
+ begin//7
+ seg2 = 7'b1111000;
+ end
+ 
+  4'b1000:
+ begin//8
+ seg2 = 7'b0000000;
+ end
+ 
+ 4'b1001:
+ begin//9
+ seg2 = 7'b0010000;
+ end
+ 
+ default:
+ seg2 = 7'b0000110;
+ 
+
+ endcase
+end	
+	
+	
+	
+	
+	
+always@(posedge ok,posedge reset)
+begin
+ y=(~((a[7]^b[7])|(a[6]^b[6])|(a[5]^b[5])|(a[4]^b[4])|(a[3]^b[3])|(a[2]^b[2])|(a[1]^b[1])|(a[0]^b[0]))&z);
+ if(reset)
+ begin
+ y=0;
+ end
+end
+
+endmodule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+module counter(q,clk,reset);
+input clk,reset;
+output reg [3:0]q;
+
+initial
+begin
+q=4'b0000;
+end
+
+always @(posedge clk ,posedge reset)
+	begin
+		if (reset==1)
+		q=4'b0000;
+		else
+		begin
+			q<=q+1;
+		end
+	end
+endmodule
